@@ -1,0 +1,3 @@
+NLinear:
+  position_dim: 6
+  embedding_dim: 16
