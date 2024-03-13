@@ -12,7 +12,7 @@ from torch.utils.data.distributed import DistributedSampler
 from model import NLinear, R3Diffuser
 from data import R3Dataset, SO2Dataset, collate_fn_r3
 from data import TransformedDataLoader as DataLoader
-from loss import SDELoss
+from loss import R3Loss
 
 
 def setup_model(cfg):
@@ -51,10 +51,10 @@ def setup_dataset(cfg):
     
     world_type = cfg.get('world_type', 'r3')
     if world_type == 'r3':
-        dataset = R3Dataset(cfg.data_file)
+        dataset = R3Dataset(cfg)
         collate_fn = collate_fn_r3
     elif world_type == 'so2':
-        dataset = SO2Dataset(**cfg)
+        dataset = SO2Dataset(cfg)
         collate_fn = None # TODO
 
     # sampler = DifstributedSampler(dataset, shuffle=True, drop_last=True)  # distributed training
@@ -84,7 +84,7 @@ def train(cfg):
         lr=cfg.lr, betas=(0.9, 0.999),
         eps=1e-8, weight_decay=0, AMSGrad=True
     )
-    loss_func = SDELoss(cfg.loss)
+    loss_func = R3Loss(cfg.loss)
 
     def _save_checkpoint(it):
         ckpt_dir = os.path.join(cfg.output_dir, 'checkpoints')
