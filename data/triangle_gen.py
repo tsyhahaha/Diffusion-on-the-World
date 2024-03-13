@@ -8,7 +8,7 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('--number', type=int, default=100)
     parser.add_argument('--nodes', type=int, default=3)
-    parser.add_argument('--output', type=str, default='./data/output.npy')
+    parser.add_argument('--output', type=str, default='./output.npy')
     return parser.parse_args()
 
 def main(args):
@@ -21,7 +21,7 @@ def main(args):
     rots = np.array(rots)[:, None, :, :]
     trs = np.array(trs)[:, None, :]
     transformed_tri = np.matmul(rots, base_tri).squeeze()+ trs
-    visual_2d(transformed_tri)
+    # visual_2d(transformed_tri)
     np.save(args.output, transformed_tri)
 
 
