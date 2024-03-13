@@ -7,21 +7,22 @@ import torch
 class R3Diffuser:
     """VP-SDE diffuser class for translations."""
 
-    def __init__(self, r3_conf):
+    def __init__(self, dim=3, min_b=0.1, max_b=20.0, scaling=0.1):
         """
         Args:
             min_b: starting value in variance schedule.
             max_b: ending value in variance schedule.
         """
-        self._r3_conf = r3_conf
-        self.min_b = r3_conf.min_b
-        self.max_b = r3_conf.max_b
+        self.dim = dim
+        self.min_b = min_b
+        self.max_b = max_b
+        self.scaling = scaling
 
     def _scale(self, x):
-        return x * self._r3_conf.coordinate_scaling
+        return x * self.scaling
 
     def _unscale(self, x):
-        return x / self._r3_conf.coordinate_scaling
+        return x / self.scaling
 
     def b_t(self, t):
         if np.any(t < 0) or np.any(t > 1):
@@ -37,7 +38,7 @@ class R3Diffuser:
         return -1/2 * self.b_t(t) * x
 
     def sample_ref(self, n_samples: float=1):
-        return np.random.normal(size=(n_samples, 3))
+        return np.random.normal(size=(n_samples, self.dim))
 
     def marginal_b_t(self, t):
         return t*self.min_b + (1/2)*(t**2)*(self.max_b-self.min_b)
@@ -82,12 +83,12 @@ class R3Diffuser:
         """Samples marginal p(x(t) | x(0)).
 
         Args:
-            x_0: [..., n, 3] initial positions in Angstroms.
+            x_0: [..., n, d] initial positions in Angstroms.
             t: continuous time in [0, 1].
 
         Returns:
-            x_t: [..., n, 3] positions at time t in Angstroms.
-            score_t: [..., n, 3] score at time t in scaled Angstroms.
+            x_t: [..., n, d] positions at time t in Angstroms.
+            score_t: [..., n, d] score at time t in scaled Angstroms.
         """
 
         x_0 = self._scale(x_0)
@@ -168,3 +169,18 @@ class R3Diffuser:
         t = t[:,None,None]
 
         return -(x_t - torch.exp(-1/2*self.marginal_b_t(t)) * x_0) / self.conditional_var(t)
+
+if __name__=='__main__':
+    import pdb
+    x_0_tri = torch.tensor([[0, 0], [0, 1], [1, 0]])
+    x_0_tan = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]])
+
+    diffuser_3d = R3Diffuser(dim=3)
+    diffuser_4d = R3Diffuser(dim=4)
+
+    t = torch.tensor([0.5])
+
+    x_t_tri, score_tri = diffuser_3d.forward_marginal(x_0_tri, t)
+    x_t_tan, score_tan = diffuser_4d.forward_marginal(x_0_tan, t)
+    pdb.set_trace()
+

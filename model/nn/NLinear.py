@@ -6,17 +6,22 @@ from einops import rearrange
 class NLinear(nn.Module):
     def __init__(self, position_dim=6, embedding_dim=16):
         # generally, what is score network needed as input?
+        self.position_dim = position_dim
         self.position_proj = nn.Linear(position_dim, embedding_dim)
         self.fc1 = nn.Linear(16, 32)
         self.fc2 = nn.Linear(32, position_dim)
         self.time_step_embedder = TimestepEmbedder(embedding_dim=32, output_dim=embedding_dim)
 
     def forward(self, batch):
-        x = self.relu(self.position_proj(batch['position']))
+        pos_shape = batch['position_t']
+        input_position = batch['position_t'].view(pos_shape[0], position_dim, -1)
+
+        x = self.relu(self.position_proj(input_position))
         time_emb = self.time_step_embedder(batch['t'])
         x = self.relu(self.fc1(x + time_emb))
         x = self.fc2(x)
-        return x
+
+        return {'pred_score': x.view(pos_shape)}
 
 class TimestepEmbedder(nn.Module):
     # Code from https://github.com/hojonathanho/diffusion/blob/master/diffusion_tf/nn.py

@@ -43,7 +43,7 @@ def visual_2d(graphs):
     plt.grid(True)
     plt.axis('equal')
     # plt.show()
-    plt.savefig('data/test.png')
+    plt.savefig('./test.png')
 
 if __name__=='__main__':
     graph = [(1,1), (1,2), (2,2), (2,1)]
