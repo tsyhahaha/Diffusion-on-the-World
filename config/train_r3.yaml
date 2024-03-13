@@ -1,6 +1,7 @@
 default:
   transforms: r3
   model: r3
+  loss: r3
 
 world_type: r3
 seed: 2024

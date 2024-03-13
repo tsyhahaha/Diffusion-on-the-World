@@ -1,9 +1,11 @@
 import torch
 from torch.nn as nn
 
-class SDELoss(nn.module):
-    def __init__(self):
-        pass
+def R3Loss(batch, value, cfg):
+    gt_score = batch['gt_score']
+    pred_score = value['pred_score']
 
-    def forward(self, ret, value):
-        pass
+    error = torch.sum(torch.square(pred_score - gt_score), dim=-1)
+    error = torch.clip(error, 0., cfg.clamp_distance**2)
+
+    return torch.sum(error)
