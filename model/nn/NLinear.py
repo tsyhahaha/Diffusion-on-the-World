@@ -4,12 +4,12 @@ import numpy as np
 from einops import rearrange
 
 class NLinear(nn.Module):
-    def __init__(self):
+    def __init__(self, position_dim=6, embedding_dim=16):
         # generally, what is score network needed as input?
-        self.position_proj = nn.Linear(6, 16)
+        self.position_proj = nn.Linear(position_dim, embedding_dim)
         self.fc1 = nn.Linear(16, 32)
-        self.fc2 = nn.Linear(32, 6)
-        self.time_step_embedder = TimestepEmbedder(embedding_dim=32, output_dim=16)
+        self.fc2 = nn.Linear(32, position_dim)
+        self.time_step_embedder = TimestepEmbedder(embedding_dim=32, output_dim=embedding_dim)
 
     def forward(self, batch):
         x = self.relu(self.position_proj(batch['position']))

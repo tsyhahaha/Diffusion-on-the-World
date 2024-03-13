@@ -2,8 +2,18 @@ default:
   transforms: r3
   model: r3
 
+world_type: r3
+seed: 2024
+
 # training
+lr: 0.001
+batch_size: 256
+num_epoch: 1000
+gradient_accumulation: 1
 
 # dataset
+data_file: "./data/output.npy"
 
 # output
+save_step: 50
+output_dir: ./output
