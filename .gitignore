@@ -2,3 +2,5 @@
 */data/
 **.egg-info**
 **/*.npy
+**/build
+**/dist
