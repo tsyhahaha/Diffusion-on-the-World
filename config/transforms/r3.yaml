@@ -1,2 +1,6 @@
-make_initial_pos: {}
 make_t: {}
+make_r3_score: 
+  r3_conf:
+    min_b: 0.1
+    max_b: 20.0
+    coordinate_scaling: 0.1

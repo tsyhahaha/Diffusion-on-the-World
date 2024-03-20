@@ -1,19 +1,21 @@
-default:
-  transforms: r3
-  model: r3
-  loss: r3
+defaults:
+  - transforms: r3
+  - model: r3
+  - loss: r3
 
 world_type: r3
+
 seed: 2024
+verbose: 1
 
 # training
 lr: 0.001
-batch_size: 256
+batch_size: 2
 num_epoch: 1000
 gradient_accumulation: 1
 
 # dataset
-data_file: "./data/output.npy"
+data_file: "/home/taosiyuan/Diffusion-on-the-World/output.npy"
 
 # output
 save_step: 50

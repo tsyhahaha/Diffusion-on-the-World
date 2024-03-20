@@ -3,7 +3,7 @@ from omegaconf import DictConfig
 import logging
 import os
 
-from scripts.train_func_r3 import train
+from diffusion_world.trainer.train_func_r3 import train
 
 def setup(cfg):
     """prepare folder, logger......"""
