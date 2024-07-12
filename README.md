@@ -1,6 +1,7 @@
 # Diffusion-on-the-World
 Use diffusion to solve general simplified problem on creating world
 
+
 ## How to start
 Firstly, clone the repository to local.
 ```
